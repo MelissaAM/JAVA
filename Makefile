@@ -1,7 +1,7 @@
 .PHONY: compile
 
 compile:
-	javac Main.java
+	javac Main.java Clock.java
 
 .PHONY: run
 
