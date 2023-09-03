@@ -1,24 +1,17 @@
 import javax.swing.JFrame;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
 class Main {
   public static void main(String args[]) {
-    JFrame frame = new JFrame();
-    frame.setLayout(new GridBagLayout());
+    JFrame frame = new JFrame("Reloj");
+    frame.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
     Clock clockPanel = new Clock();
-
-    GridBagConstraints gbc = new GridBagConstraints();
-    gbc.gridx = 0;
-    gbc.gridy = 0;
-    gbc.weightx = 1.0;
-    gbc.weighty = 1.0;
-    gbc.fill = GridBagConstraints.CENTER;
+    frame.add(clockPanel);
 
     // Agregar el JPanel al centro
-    frame.add(clockPanel, gbc);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.pack();
+    frame.setSize(new Dimension(700, 700));
     frame.setLocationRelativeTo(null); // Centrar el JFrame en la pantalla
     frame.setVisible(true);
   }

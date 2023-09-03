@@ -1,7 +1,5 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 
 public class Clock extends JPanel {
-  private static final int PREF_W = 600;
+  private static final int PREF_W = 350; // Tama;o triangulo
   private static final int PREF_H = PREF_W;
   private static final Color color = Color.gray;
   private Path2D myPath = new Path2D.Double();
@@ -91,47 +89,55 @@ public class Clock extends JPanel {
     }
 
     // Dibuja el péndulo
-    double pendulumX = squareX + squareSize / 2;
-    double pendulumY = squareY + squareSize / 2;
+    // double pendulumX = squareX + squareSize / 2;
+    // double pendulumY = squareY + squareSize / 2;
 
-    double pendulumBobX = pendulumX + pendulumLength * Math.sin(pendulumAngle);
-    double pendulumBobY = pendulumY + pendulumLength * Math.cos(pendulumAngle);
+    // double pendulumBobX = pendulumX + pendulumLength * Math.sin(pendulumAngle);
+    // double pendulumBobY = pendulumY + pendulumLength * Math.cos(pendulumAngle);
 
-    g2.setPaint(Color.black);
-    g2.drawLine((int) pendulumX, (int) pendulumY, (int) pendulumBobX, (int) pendulumBobY);
+    // g2.setPaint(Color.black);
+    // g2.drawLine((int) pendulumX, (int) pendulumY, (int) pendulumBobX, (int)
+    // pendulumBobY);
 
-    // Dibuja el círculo (peso) en la punta del péndulo
-    int circleSize = 20; // Tamaño del círculo
-    g2.fillOval((int) pendulumBobX - circleSize / 2, (int) pendulumBobY - circleSize / 2, circleSize, circleSize);
+    //// Dibuja el círculo (peso) en la punta del péndulo
+    // int circleSize = 20; // Tamaño del círculo
+    // g2.fillOval((int) pendulumBobX - circleSize / 2, (int) pendulumBobY -
+    //// circleSize / 2, circleSize, circleSize);
+
+    // Calcular el centro del círculo
+    double circleCenterX = squareX + squareSize / 2;
+    double circleCenterY = squareY + squareSize / 2;
 
     // Dibuja la manecilla de segundos
     double secondsAngle = Math.toRadians(90 - seconds * 6);
-    double secondsX = squareX + squareSize / 2 * Math.cos(secondsAngle);
-    double secondsY = squareY - squareSize / 2 * Math.sin(secondsAngle);
+    double secondsLength = squareSize / 2;
+    double secondsX = circleCenterX + secondsLength * Math.cos(secondsAngle);
+    double secondsY = circleCenterY - secondsLength * Math.sin(secondsAngle);
     g2.setPaint(Color.red);
-    g2.draw(new Line2D.Double(squareX, squareY, secondsX, secondsY));
+    g2.draw(new Line2D.Double(circleCenterX, circleCenterY, secondsX, secondsY));
 
     // Dibuja la manecilla de minutos
     double minutesAngle = Math.toRadians(90 - minutes * 6 - seconds * 0.1);
-    double minutesX = squareX + squareSize / 2 * Math.cos(minutesAngle);
-    double minutesY = squareY - squareSize / 2 * Math.sin(minutesAngle);
+    double minutesLength = squareSize / 2;
+    double minutesX = circleCenterX + minutesLength * Math.cos(minutesAngle);
+    double minutesY = circleCenterY - minutesLength * Math.sin(minutesAngle);
     g2.setPaint(Color.blue);
-    g2.draw(new Line2D.Double(squareX, squareY, minutesX, minutesY));
+    g2.draw(new Line2D.Double(circleCenterX, circleCenterY, minutesX, minutesY));
 
     // Dibuja la manecilla de horas
     double hoursAngle = Math.toRadians(90 - (hours % 12) * 30 - minutes * 0.5);
-    double hoursX = squareX + squareSize / 3 * Math.cos(hoursAngle);
-    double hoursY = squareY - squareSize / 3 * Math.sin(hoursAngle);
+    double hoursLength = squareSize / 3;
+    double hoursX = circleCenterX + hoursLength * Math.cos(hoursAngle);
+    double hoursY = circleCenterY - hoursLength * Math.sin(hoursAngle);
     g2.setPaint(Color.green);
-    g2.draw(new Line2D.Double(squareX, squareY, hoursX, hoursY));
-
+    g2.draw(new Line2D.Double(circleCenterX, circleCenterY, hoursX, hoursY));
   }
 
   @Override
   public Dimension getPreferredSize() {
     if (isPreferredSizeSet())
       return super.getPreferredSize();
-    return new Dimension(PREF_W, PREF_H);
+    return new Dimension(600, 600);
   }
 
   private String convertToRoman(int num) {
