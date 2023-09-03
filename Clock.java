@@ -5,6 +5,10 @@ import java.awt.Graphics2D;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
+import java.awt.geom.Line2D;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 
@@ -22,6 +26,19 @@ public class Clock extends JPanel {
     myPath.lineTo(PREF_W - x, y);
     myPath.lineTo(PREF_W / 2.0, PREF_H / 4.0);
     myPath.closePath();
+
+    // Hilo para actualizar el reloj
+    Thread clockThread = new Thread(() -> {
+      while (true) {
+        repaint();
+        try {
+          TimeUnit.SECONDS.sleep(1); // espera 1 segundo
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    clockThread.start();
   }
 
   @Override
@@ -30,6 +47,13 @@ public class Clock extends JPanel {
     Graphics2D g2 = (Graphics2D) g;
 
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+    Date date = new Date();
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    int seconds = calendar.get(Calendar.SECOND);
+    int minutes = calendar.get(Calendar.MINUTE);
+    int hours = calendar.get(Calendar.HOUR);
 
     // Cuadrado
     double squareSize = 200;
@@ -58,8 +82,8 @@ public class Clock extends JPanel {
       double y = circleY + circleSize / 2 * Math.sin(angle);
 
       String numeral = convertToRoman(i);
-      int width = g2.getFontMetrics().stringWidth(numeral); 
-      int height = g2.getFontMetrics().getHeight(); 
+      int width = g2.getFontMetrics().stringWidth(numeral);
+      int height = g2.getFontMetrics().getHeight();
 
       g2.drawString(numeral, (int) x - width / 2, (int) y + height / 4);
     }
@@ -67,6 +91,27 @@ public class Clock extends JPanel {
     // Triangulo
     g2.setPaint(color);
     g2.fill(myPath);
+
+    // Dibuja la manecilla de segundos
+    double secondsAngle = Math.toRadians(90 - seconds * 6);
+    double secondsX = circleX + circleSize / 2 * Math.cos(secondsAngle);
+    double secondsY = circleY - circleSize / 2 * Math.sin(secondsAngle);
+    g2.setPaint(Color.red);
+    g2.draw(new Line2D.Double(circleX, circleY, secondsX, secondsY));
+
+    // Dibuja la manecilla de minutos 
+    double minutesAngle = Math.toRadians(90 - minutes * 6 - seconds * 0.1);
+    double minutesX = circleX + circleSize / 2 * Math.cos(minutesAngle);
+    double minutesY = circleY - circleSize / 2 * Math.sin(minutesAngle);
+    g2.setPaint(Color.blue);
+    g2.draw(new Line2D.Double(circleX, circleY, minutesX, minutesY));
+
+    // Dibuja la manecilla de horas 
+    double hoursAngle = Math.toRadians(90 - (hours % 12) * 30 - minutes * 0.5);
+    double hoursX = circleX + circleSize / 3 * Math.cos(hoursAngle);
+    double hoursY = circleY - circleSize / 3 * Math.sin(hoursAngle);
+    g2.setPaint(Color.green);
+    g2.draw(new Line2D.Double(circleX, circleY, hoursX, hoursY));
 
   }
 
