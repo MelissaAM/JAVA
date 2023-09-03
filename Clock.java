@@ -1,8 +1,10 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 import java.awt.geom.Line2D;
@@ -22,11 +24,6 @@ public class Clock extends JPanel {
   private boolean pendulumDirection = true; // True para derecha, False para izquierda
 
   public Clock() {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int panelX = (screenSize.width - this.getWidth() - this.getInsets().left - this.getInsets().right) / 2;
-    int panelY = ((screenSize.height - this.getHeight() - this.getInsets().top - this.getInsets().bottom) / 2);
-    this.setLocation(panelX, panelY);
-    this.setLayout(null);
     double x = (PREF_W / 2.0) * (1 - 1 / Math.sqrt(3));
     double y = 3.0 * PREF_H / 4.0;
 
@@ -70,31 +67,21 @@ public class Clock extends JPanel {
     double squareY = PREF_H * 3.0 / 4.0 + 20; // Ajusta la posicion vertical
                                               // aca
 
-    g2.setPaint(Color.gray);
+    g2.setPaint(Color.white);
     g2.fillRect((int) squareX, (int) squareY, (int) squareSize, (int) squareSize);
 
     // Triangulo
     g2.setPaint(color);
     g2.fill(myPath);
 
-    // Circulo
-    // double squareSize = squareSize * 0.8; // Tamaño del círculo (80% del
-    // cuadrado)
-    // double squareX = squareX + (squareSize - squareSize) / 2.0;
-    // double squareY = squareY + (squareSize - squareSize) / 2.0;
-
-    // g2.setPaint(Color.white); // Color del círculo
-    // g2.fillOval((int) squareX, (int) squareY, (int) squareSize, (int)
-    // squareSize);
-
-    // g2.setPaint(Color.black);
-    // Font font = new Font("Times New Roman", Font.PLAIN, 24);
-    // g2.setFont(font);
+    Font font = new Font("Times New Roman", Font.PLAIN, 24);
+    g2.setFont(font);
+    double radius = squareSize / 2;
 
     for (int i = 1; i <= 12; ++i) {
       double angle = Math.toRadians(360 - (i * 30));
-      double x = squareSize + squareSize / 2 * Math.cos(angle);
-      double y = squareY + squareSize / 2 * Math.sin(angle);
+      double x = squareX + squareSize / 2 + radius * Math.cos(angle);
+      double y = squareY + squareSize / 2 + radius * Math.sin(angle);
 
       String numeral = convertToRoman(i);
       int width = g2.getFontMetrics().stringWidth(numeral);
