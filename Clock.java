@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.Dimension;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
@@ -16,10 +17,16 @@ public class Clock extends JPanel {
   private static final int PREF_H = PREF_W;
   private static final Color color = Color.gray;
   private Path2D myPath = new Path2D.Double();
-  private int pendulumLength = 200;
+  private int pendulumLength = 100;
   private double pendulumAngle = 0;
+  private boolean pendulumDirection = true; // True para derecha, False para izquierda
 
   public Clock() {
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    int panelX = (screenSize.width - this.getWidth() - this.getInsets().left - this.getInsets().right) / 2;
+    int panelY = ((screenSize.height - this.getHeight() - this.getInsets().top - this.getInsets().bottom) / 2);
+    this.setLocation(panelX, panelY);
+    this.setLayout(null);
     double x = (PREF_W / 2.0) * (1 - 1 / Math.sqrt(3));
     double y = 3.0 * PREF_H / 4.0;
 
@@ -31,13 +38,10 @@ public class Clock extends JPanel {
     // Hilo para actualizar el reloj
     Thread clockThread = new Thread(() -> {
       while (true) {
-        pendulumAngle += 0.01; // Incrementa el ángulo del péndulo
-        if (pendulumAngle >= Math.PI * 2) {
-          pendulumAngle = 0;
-        }
+        updatePendumlum();
         repaint();
         try {
-          TimeUnit.SECONDS.sleep(1); // espera 1 segundo
+          TimeUnit.MILLISECONDS.sleep(16); // espera 1 segundo
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
@@ -109,6 +113,10 @@ public class Clock extends JPanel {
     g2.setPaint(Color.black);
     g2.drawLine((int) pendulumX, (int) pendulumY, (int) pendulumBobX, (int) pendulumBobY);
 
+    // Dibuja el círculo (peso) en la punta del péndulo
+    int circleSize = 20; // Tamaño del círculo
+    g2.fillOval((int) pendulumBobX - circleSize / 2, (int) pendulumBobY - circleSize / 2, circleSize, circleSize);
+
     // Dibuja la manecilla de segundos
     double secondsAngle = Math.toRadians(90 - seconds * 6);
     double secondsX = squareX + squareSize / 2 * Math.cos(secondsAngle);
@@ -142,5 +150,19 @@ public class Clock extends JPanel {
   private String convertToRoman(int num) {
     String[] romanSymbols = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII" };
     return romanSymbols[num - 1];
+  }
+
+  private void updatePendumlum() {
+    if (pendulumDirection) {
+      pendulumAngle += 0.01;
+      if (pendulumAngle >= Math.PI / 4) {
+        pendulumDirection = false;
+      }
+    } else {
+      pendulumAngle -= 0.01;
+      if (pendulumAngle <= -Math.PI / 4) {
+        pendulumDirection = true;
+      }
+    }
   }
 }
