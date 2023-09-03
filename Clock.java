@@ -23,7 +23,7 @@ public class Clock extends JPanel {
 
   public Clock() {
     double x = (PREF_W / 2.0) * (1 - 1 / Math.sqrt(3));
-    double y = 3.0 * PREF_H / 4.0;
+    double y = 2.0 * PREF_H / 4.0;
 
     myPath.moveTo(x, y);
     myPath.lineTo(PREF_W - x, y);
@@ -62,11 +62,17 @@ public class Clock extends JPanel {
     // Cuadrado
     double squareSize = 200;
     double squareX = (PREF_W - squareSize) / 2.0;
-    double squareY = PREF_H * 3.0 / 4.0 + 20; // Ajusta la posicion vertical
+    double squareY = PREF_H * 2.0 / 4.0 + 20; // Ajusta la posicion vertical
                                               // aca
 
     g2.setPaint(Color.white);
     g2.fillRect((int) squareX, (int) squareY, (int) squareSize, (int) squareSize);
+
+    // Dibuja el segundo cuadrado (abajo)
+    double secondSquareY = PREF_H * 4.5 / 4.0 + 20; // Nueva posición vertical para el segundo cuadrado
+
+    g2.setPaint(Color.gray); // Cambia el color si lo deseas
+    g2.fillRect((int) squareX, (int) secondSquareY, (int) squareSize, (int) squareSize);
 
     // Triangulo
     g2.setPaint(color);
@@ -89,20 +95,19 @@ public class Clock extends JPanel {
     }
 
     // Dibuja el péndulo
-    // double pendulumX = squareX + squareSize / 2;
-    // double pendulumY = squareY + squareSize / 2;
+     double pendulumX = squareX + squareSize / 2;
+     double pendulumY = secondSquareY + squareSize / 2;
 
-    // double pendulumBobX = pendulumX + pendulumLength * Math.sin(pendulumAngle);
-    // double pendulumBobY = pendulumY + pendulumLength * Math.cos(pendulumAngle);
+     double pendulumBobX = pendulumX + pendulumLength * Math.sin(pendulumAngle);
+     double pendulumBobY = pendulumY + pendulumLength * Math.cos(pendulumAngle);
 
-    // g2.setPaint(Color.black);
-    // g2.drawLine((int) pendulumX, (int) pendulumY, (int) pendulumBobX, (int)
-    // pendulumBobY);
+     g2.setPaint(Color.black);
+     g2.drawLine((int) pendulumX, (int) pendulumY, (int) pendulumBobX, (int)
+     pendulumBobY);
 
-    //// Dibuja el círculo (peso) en la punta del péndulo
-    // int circleSize = 20; // Tamaño del círculo
-    // g2.fillOval((int) pendulumBobX - circleSize / 2, (int) pendulumBobY -
-    //// circleSize / 2, circleSize, circleSize);
+    // Dibuja el círculo (peso) en la punta del péndulo
+     int circleSize = 20; // Tamaño del círculo
+     g2.fillOval((int) pendulumBobX - circleSize / 2, (int) pendulumBobY - circleSize / 2, circleSize, circleSize);
 
     // Calcular el centro del círculo
     double circleCenterX = squareX + squareSize / 2;
@@ -137,7 +142,7 @@ public class Clock extends JPanel {
   public Dimension getPreferredSize() {
     if (isPreferredSizeSet())
       return super.getPreferredSize();
-    return new Dimension(600, 600);
+    return new Dimension(700, 700);
   }
 
   private String convertToRoman(int num) {
