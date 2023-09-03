@@ -5,6 +5,7 @@ class Main {
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.getContentPane().add(new Clock());
+    frame.pack();
     frame.setVisible(true);
   }
 
